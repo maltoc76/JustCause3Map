@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>JC3 | Map</title>
+
+
+  <script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="style/style.css"/>
+
+</head>
+
+
+
+<body>
+
+<script type='text/javascript'>
+$(window).load(function(){
+var map;
+
+function unproject(coord) {
+    return map.unproject(coord, map.getMaxZoom());
+}
+
+function onMapClick(e) {
+    console.log("You clicked the map at " + map.project(e.latlng));
+}
+
+
+      $(function () {
+    "use strict";
+
+    var southWest, northEast;
+
+    map = L.map('map', {
+        maxZoom: 6,
+        crs: L.CRS.Simple
+    }).setView([0, 0], 0);
+
+    southWest = unproject([0, 17000]);
+    northEast = unproject([17000, 0]);
+
+    map.setMaxBounds(new L.LatLngBounds(southWest, northEast));
+
+    L.tileLayer("http:\/\/oyster.ignimgs.com\/ignmedia\/wikimaps\/just-cause-3\/island\/{z}\/{x}-{y}.jpg", {
+        minZoom:                0,
+        maxZoom:                7,
+        continuousWorld:        true,
+        unloadInvisibleTiles: 	false,
+		retina:					false,
+		editable:				false,
+		moderator:			false,
+		filter:					false,
+		externalLink:		false,
+		clusters: {
+			enabled:				        	false,
+			clusterRadius:				    80,
+			disableClusteringAtZoom:	3
+    },
+		controls: {
+			title:		  	false,
+			fullscreen:		true,
+			slidingview:	true,
+			search:				true,
+			filters: 			true,
+			addMarker:		true
+    	},
+		  zoomIn:       false
+    }).addTo(map);
+
+
+    map.on("click", onMapClick);
+
+    var TestInfo = [
+    {point: [9716, 5546] },
+    {point: [6799, 6816] },
+    {point: [13035, 9848] },
+    ];
+
+var Test = new Array();
+
+    for(var i = 0; i < TestInfo.length; i++) {
+      Test[i] = L.marker(unproject(TestInfo[i].point)).addTo(map);
+      Test[i].bindPopup("<b>Something</b>");
+     }
+
+ var TestGroup =  L.layerGroup(Test);
+
+ var overLayers = {
+   "Test": TestGroup,
+ };
+
+ var controlLayer = L.control.layers("",overLayers).addTo(map);
+
+     });
+});
+</script>
+
+
+
+  <div id="map"></div>
+
+
+
+
+
+</body>
+
+</html>
